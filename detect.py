@@ -17,7 +17,6 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 class Tespit():
 
-
     def __init__(self):
        # self.name = name
        # self.koordinat = koordinat
@@ -26,7 +25,6 @@ class Tespit():
 
         #print("tespit edilen : " , self.name)
         #print("koordinatları : " , self.koordinat)
-
 
 
 
@@ -140,14 +138,13 @@ def detect(save_img=False):
                         (plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3))
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()
 
-
-
                         ab = torch.tensor(xyxy).view(1,4)[0]
                         ab = ab.numpy()
 
                         isim = f'{names[int(cls)]}'
                         sonuc.label_list.append(isim)
                         sonuc.koordinat_list.append(ab)
+
                 #sol cıkıs ve kalıp label bulma
                 i = 0
                 cıkıs_list = []
@@ -184,13 +181,8 @@ def detect(save_img=False):
                         flag1 = True
                         print("butun kosullar saglandı")
                         cv2.putText(im0, "UYGUN KONUM" ,(200,200), cv2.FONT_HERSHEY_SIMPLEX, 1, (209,80, 0 ,255), 3)
-                        #cıkıs = sonuc.koordinat_list[0]
-                        #if (640 < cıkıs[0] < 700):
-                            #alan = (cıkıs[2] - cıkıs[0]) * (cıkıs[3] - cıkıs[1])
-                        #else:
-                            #cıkıs = sonuc.koordinat_list[1]
-                            #alan = (cıkıs[2] - cıkıs[0]) * (cıkıs[3] - cıkıs[1])
                         print("sol kapak alanı : " , str(sol_alan))
+
                         if(2000 < sol_alan < 2400) or flag2:
                             # print("cıkmıs")
                             flag2 = True
@@ -209,13 +201,11 @@ def detect(save_img=False):
                                                     (209, 80, 0, 255), 3)
                                         print("bunu bi şekilde halletmemiz gerek")
 
-
                                     time.sleep(1)
-                                    print("flag yazdırdık: "+ str(flag1)+ " "+ str(flag2)+ " "+ str(flag3))
+                                    #print("flag yazdırdık: "+ str(flag1)+ " "+ str(flag2)+ " "+ str(flag3))
 
                     else:
                         print("kosullar saglanmadı")
-
 
                     if ((sol_cıkıs[0] > 800) and flag3):
                         flag1 = False
@@ -224,13 +214,12 @@ def detect(save_img=False):
 
                 except IndexError:
                     pass
-                # kalıp ın son durumdaki koordinatı : [        672,         302,         862,         840]
 
 
             # Print time (inference + NMS)
             print(f'{s}Done. ({t2 - t1:.3f}s)')
             atama += (t2 - t1)
-            print("meloo", str(atama))
+            print("toplam zaman", str(atama))
 
 
             # Stream results
@@ -262,46 +251,6 @@ def detect(save_img=False):
     print(f'Done. ({time.time() - t0:.3f}s)')
 
 
-
-
-
-    #print("kalıp koordinatı" , sonuc.koordinat_list[2])
-    #print("kalıp x1 : " , sonuc.koordinat_list[2][0])
-    #print("kalıp x2 : ", sonuc.koordinat_list[2][2])
-    #print("kalıp y1 : ", sonuc.koordinat_list[2][1])
-    #print("kalıp y2 : ", sonuc.koordinat_list[2][3])
-
-
-    #cıkıs yönlerini bulma
-    #i = 0
-    # while i<9:
-    #     print("cıkıs1 koordinatları" , sonuc.koordinat_list[i][0])
-    #     print("cıkıs2 koordinatları", sonuc.koordinat_list[i+1][0])
-    #     cıkıs1 = sonuc.koordinat_list[i][0]
-    #     cıkıs2 = sonuc.koordinat_list[i+1][0]
-    #     if(640 < cıkıs1 < 700):
-    #         print("cıkıs1 soldadır")
-    #     else:
-    #         print("cıkıs1 sağdadır")
-    #
-    #     if(640 < cıkıs2 < 700):
-    #         print("cıkıs2 soldadır")
-    #     else:
-    #         print("cıkıs2 sağdadır")
-    #     i = i+3
-
-    #çıkışların alanlarını bulma
-
-
-    #sol çıkış için işlemler : sol çıkış ilk baştaki koordinatı -> [   667,   172,   700,    204]
-    #sol çıkışın başlangıç alanı : 1056
-    #sol çıkışın sondaki alanı : 2352
-    #sağ çıkışın başlangıç alanı : 598
-    #sağ çıkışın sondaki alanı : 1410
-
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model.pt path(s)')
@@ -329,10 +278,6 @@ if __name__ == '__main__':
         if opt.update:  # update all models (to fix SourceChangeWarning)
             for opt.weights in ['yolov5s.pt', 'yolov5m.pt', 'yolov5l.pt', 'yolov5x.pt']:
                 detect()
-                #atama += 1
-                #print("meloo 1-- ", str(atama))
                 strip_optimizer(opt.weights)
         else:
             detect()
-            #atama += 1
-           # print("meloo 2-- ", str(atama))
